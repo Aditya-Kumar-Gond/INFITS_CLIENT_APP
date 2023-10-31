@@ -3,11 +3,9 @@ package com.example.infits;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,19 +14,6 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,7 +81,7 @@ public class Section5Q7 extends Fragment {
         no = view.findViewById(R.id.no);
 
         textView77 = view.findViewById(R.id.textView77);
-        final String[] storeAnswer = new String[1];
+
 
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +109,7 @@ public class Section5Q7 extends Fragment {
             }
         });
 
+
         nextbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,12 +125,10 @@ public class Section5Q7 extends Fragment {
                     ConsultationFragment.psection5 += 1;
 
                     Navigation.findNavController(v).navigate(R.id.action_section5Q7_to_section5Q8);
-
-                }
                 }
 
 
-
+            }
         });
 
         backbtn.setOnClickListener(new View.OnClickListener() {

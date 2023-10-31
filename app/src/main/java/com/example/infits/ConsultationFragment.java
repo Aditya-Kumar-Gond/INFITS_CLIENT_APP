@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -278,22 +277,22 @@ public class ConsultationFragment extends Fragment {
 
 
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-               String url = "http://192.168.0.102/myproject/infits/datatest.php";
-                //generatePDF(allClientData, section1data, section2data, section3data, section4data, section5data, section6data);
+
+                generatePDF(allClientData, section1data, section2data, section3data, section4data, section5data, section6data);
 
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
 
-                     //   Log.i("New thread",Thread.currentThread().getName());
+                        //Log.i("New thread",Thread.currentThread().getName());
 
-                      /*  StringBuffer sb1 = new StringBuffer();
+                        StringBuffer sb1 = new StringBuffer();
                         StringBuffer sb2 = new StringBuffer();
 
                         for(String i : DataSectionTwo.diagnosed) {
                             sb1.append(i);
                             sb1.append(", ");
-                        } */
+                        }
                         diagnosedAnswer = sb1.toString();
 
 
@@ -390,7 +389,7 @@ public class ConsultationFragment extends Fragment {
                         answers.add(DataSectionTwo.medication);
                         answers.add(famhistoryAnswer);
 
-                     //   gastritis,constipation,diarrhoea,nausea,vomiting,appetite,hairfall,bloating,micturition,headache,stomachache;
+                        //gastritis,constipation,diarrhoea,nausea,vomiting,appetite,hairfall,bloating,micturition,headache,stomachache;
                         answers.add(DataSectionThree.gastritis);
                         answers.add(DataSectionThree.constipation);
                         answers.add(DataSectionThree.diarrhoea);
@@ -446,8 +445,8 @@ public class ConsultationFragment extends Fragment {
                         answers.add(DataSectionSix.tea);
 
 
-
-                      /*  StringBuffer sb3 = new StringBuffer();
+                        /*
+                        StringBuffer sb3 = new StringBuffer();
 
                         for(String i : questions) {
                             sb3.append(i);
@@ -455,17 +454,17 @@ public class ConsultationFragment extends Fragment {
                         }
                         String qu = sb3.toString();
 
+                         */
+
+                        //Toast.makeText(getActivity(), "Questions: "+qu,Toast.LENGTH_SHORT).show();
+
+                        //Log.i("New thread",qu);
 
 
-                        Toast.makeText(getActivity(), "Questions: "+qu,Toast.LENGTH_SHORT).show();
+                        //String url="http://192.168.1.14/infits/clientconsultation.php";
 
-                        Log.i("New thread",qu); */
-
-
-                       String url = "http://192.168.1.101/myproject/infits/clientconsultation.php";
-
-                        String tablename = DataFromDatabase.clientuserID;
-                      // String tablename = "clientidconsul";
+                        //String tablename = DataFromDatabase.clientuserID;
+                        String tablename = "clientidconsul";
 
                         JSONArray arrayQues = new JSONArray();
                         for(String ques : questions) {
@@ -476,6 +475,7 @@ public class ConsultationFragment extends Fragment {
                         for(String ans : answers) {
                             arrayAns.put(ans);
                         }
+
                         SubmitQuesAns(arrayQues.toString(), arrayAns.toString());
                         Intent intent = new Intent(getActivity(), Overview.class);
                         startActivity(intent);
@@ -495,7 +495,7 @@ public class ConsultationFragment extends Fragment {
 
     private void generatePDF(String clientData, String section1data, String section2data, String section3data, String section4data, String section5data,String section6data) {
 
-        String extstoragedir = Environment.getExternalStorageDirectory().toString();
+        //String extstoragedir = Environment.getExternalStorageDirectory().toString();
         //String extstoragedir =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + "sample1" + ".pdf";
 
 
@@ -589,12 +589,8 @@ public class ConsultationFragment extends Fragment {
 
     public void SubmitQuesAns(String ques, String ans) {
 
-        // String url=String.format("https://infits.in/androidApi/clientconsultation.php",DataFromDatabase.ipConfig);
-      //  String url = "https://infits.in/androidApi/clientconsultation.php",DataFromDatabase.ipConfig);
-
-
-         String url=String.format("http://192.168.1.101/myproject/infits/clientconsultation.php",DataFromDatabase.ipConfig);
-
+        //String url=String.format("%sclientconsultation.php",DataFromDatabase.ipConfig);
+        String url = "https://infits.in/androidApi/clientconsultation.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -624,7 +620,6 @@ public class ConsultationFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         requestQueue.add(stringRequest);
     }
-
 
 }
 

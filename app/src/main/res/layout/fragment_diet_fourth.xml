@@ -115,13 +115,12 @@
         android:layout_width="330dp"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/_160sdp"
-        app:layout_constraintEnd_toEndOf="parent"
         android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cl2"
         app:layout_constraintTop_toBottomOf="@+id/parentLayout"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/cl2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -143,12 +143,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true" />
+
         <ImageView
             android:id="@+id/food_eaten_photo"
             android:layout_width="match_parent"
-            android:visibility="invisible"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
+            android:visibility="invisible" />
+
         <TextView
             android:layout_width="match_parent"
             android:text="Take a photo"

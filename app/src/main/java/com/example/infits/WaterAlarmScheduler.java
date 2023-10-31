@@ -7,8 +7,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.joda.time.LocalDateTime;
+
+import java.time.LocalTime;
 
 public class WaterAlarmScheduler {
     PendingIntent waterReceiverPendingIntent;
@@ -17,7 +20,7 @@ public class WaterAlarmScheduler {
     long ondDayInMillis = 24*3600*1000;
     long todayTimeInMilli = LocalDateTime.now().getMillisOfDay();
     public void setAlarm(Context context,long startTime,long endTime,long intervalTimeInMilli,long times){
-        //  Toast.makeText(context, "val"+times, Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(context, "val"+times, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "setAlarm: startTime:"+startTime+" endTime:"+endTime+" interval:"+intervalTimeInMilli+" times:"+times);
 
         if (startTime> endTime){
@@ -54,13 +57,12 @@ public class WaterAlarmScheduler {
                     PendingIntent waterReceiverPendingIntent = PendingIntent.getBroadcast(
                             context, i, waterReceiverIntent, PendingIntent.FLAG_IMMUTABLE);
 
-                    // Setting the repeating alarm
-                   // alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, waterReceiverPendingIntent);
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP,alarmTime, waterReceiverPendingIntent);
+                        // Setting the repeating alarm
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, waterReceiverPendingIntent);
                     Log.e(TAG, "alarm set! : at "+(alarmTime-System.currentTimeMillis())/60000+" minutes");
                 }else{
                     Log.e(TAG, "setAlarm: error in endTime");
-                }
+                      }
             }
 
         }else {//if selected
@@ -96,7 +98,7 @@ public class WaterAlarmScheduler {
         waterReceiverIntent.putExtra("tracker", "water");
 
         for(int i=0;i<100;i++){
-            waterReceiverPendingIntent = PendingIntent.getBroadcast(
+             waterReceiverPendingIntent = PendingIntent.getBroadcast(
                     context, i, waterReceiverIntent, PendingIntent.FLAG_IMMUTABLE
             );
             alarmManager.cancel(waterReceiverPendingIntent);

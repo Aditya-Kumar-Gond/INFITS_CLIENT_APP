@@ -69,8 +69,8 @@ import java.util.Objects;
  */
 public class WeightTrackerFragment extends Fragment {
 
-    //String url = String.format("%sweighttracker.php",DataFromDatabase.ipConfig);
-    String url = "https://infits.in/androidApi/weighttracker.php";
+    String url = String.format("%sweighttracker.php",DataFromDatabase.ipConfig);
+   // String url = "https://infits.in/androidApi/weighttracker.php";
 
     float bmi = 0;
 
@@ -333,8 +333,8 @@ public class WeightTrackerFragment extends Fragment {
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> datas = new ArrayList<>();
 
-        //String urlPast = String.format("%spastActivityWeight.php",DataFromDatabase.ipConfig);
-        String urlPast = "https://infits.in/androidApi/pastActivityWeight.php";
+        String urlPast = String.format("%spastActivityWeight.php",DataFromDatabase.ipConfig);
+       // String urlPast = "https://infits.in/androidApi/pastActivityWeight.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,urlPast, response -> {
             try {
@@ -575,8 +575,8 @@ public class WeightTrackerFragment extends Fragment {
         inAppEditor.putBoolean("newNotification", true);
         inAppEditor.apply();
 
-        //String inAppUrl = String.format("%sinAppNotifications.php", DataFromDatabase.ipConfig);
-        String inAppUrl = "https://infits.in/androidApi/inAppNotifications.php";
+        String inAppUrl = String.format("%sinAppNotifications.php", DataFromDatabase.ipConfig);
+       // String inAppUrl = "https://infits.in/androidApi/inAppNotifications.php";
 
         String type = "weight";
         String text = "You last measured weight was " + cur_weight + " kg.";
@@ -602,8 +602,8 @@ public class WeightTrackerFragment extends Fragment {
                 data.put("clientID", DataFromDatabase.clientuserID);
                 data.put("type", type);
                 data.put("text", text);
-                data.put("date", String.valueOf(date));
-
+              //  data.put("date", String.valueOf(date));
+                data.put("dateandtime", String.valueOf(date));
                 return data;
             }
         };

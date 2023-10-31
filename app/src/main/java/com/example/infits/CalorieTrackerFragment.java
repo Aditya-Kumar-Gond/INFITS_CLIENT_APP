@@ -1,4 +1,7 @@
 package com.example.infits;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -6,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -44,7 +48,7 @@ public class CalorieTrackerFragment extends Fragment {
 
     ////int calgoal;
     // int calConsumed;
-
+AlarmManager alarmManager;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -126,10 +130,12 @@ public class CalorieTrackerFragment extends Fragment {
                         String protein = valuesObject.getString("protein");
                         String fat = valuesObject.getString("fat");
 
-                        //All prasing
+                        //All parsing
                         calConsumed = Integer.parseInt(calories);
                         CCGoal = Integer.parseInt(calorieconsumegoal);
                         CBGoal = Integer.parseInt(calorieburngoal);
+
+                        Toast.makeText(getContext(), "calConsumed : "+calConsumed +" /"+calories, Toast.LENGTH_SHORT).show();
 
                         circularProgressIndicatorCC.setProgress(calConsumed, CCGoal);
                         circularProgressIndicatorCB.setProgress(760,CBGoal);
@@ -255,9 +261,11 @@ public class CalorieTrackerFragment extends Fragment {
 
 
 //        reminder.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_calorieTrackerFragment_to_calorieReminderFragment));
-
+        notifyCalNotification();
         return view;
     }
+
+
 
     private void hooks(View view) {
 //        log = view.findViewById(R.id.log);
@@ -292,5 +300,25 @@ public class CalorieTrackerFragment extends Fragment {
         setgoalmicro = view.findViewById(R.id.setgoalformicro);
         imgBack.setOnClickListener(v -> requireActivity().onBackPressed());
 
+    }
+
+
+    private void notifyCalNotification() {
+        //setting first notification at 7:30
+        long firstNotificationInMillis = 7*3600*1000 + 30*60*1000;
+        long todayTimeInMillis = org.joda.time.LocalDateTime.now().getMillisOfDay();
+        long timeDiff;
+        if(todayTimeInMillis > firstNotificationInMillis){
+            long oneDayInMillis  = 24*3600*1000;
+            timeDiff = oneDayInMillis - (todayTimeInMillis-firstNotificationInMillis);
+        }else {
+            timeDiff = firstNotificationInMillis - todayTimeInMillis;
+        }
+        long timeInterval = 3*3600*1000;
+        alarmManager = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
+
+        Intent intent = new Intent(getContext(),WaterAlarmScheduler.class);
+        PendingIntent caloriePendingIntent = PendingIntent.getBroadcast(getContext(),500,intent,PendingIntent.FLAG_IMMUTABLE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+timeDiff,timeInterval,caloriePendingIntent);
     }
 }

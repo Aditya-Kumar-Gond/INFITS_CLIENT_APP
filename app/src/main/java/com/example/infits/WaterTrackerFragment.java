@@ -2,7 +2,6 @@ package com.example.infits;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.animation.Animator;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.NotificationChannel;
@@ -14,6 +13,17 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -24,21 +34,6 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Handler;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.AuthFailureError;
@@ -54,9 +49,9 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -66,8 +61,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
 
 public class WaterTrackerFragment extends Fragment {
 
@@ -162,13 +155,11 @@ public class WaterTrackerFragment extends Fragment {
             waterGoal.setText(DataFromDatabase.waterGoal + " ml");
             try {
                 goal = Integer.parseInt(DataFromDatabase.waterGoal);
-
                 // Log.d("Goal",String.valueOf(goal));
             } catch (NumberFormatException ex) {
                 goal = 1800;
                 waterGoal.setText(1800 + " ml");
                 // Log.d("Goal",String.valueOf(goal));
-
                 System.out.println(ex);
             }
         }
@@ -194,7 +185,7 @@ public class WaterTrackerFragment extends Fragment {
         createNotificationChannel();
         waterGoalPercent.setText(String.valueOf(calculateGoal(goal)));
 
-        ///////////////////////////////////////
+
         pastActivity();
 
         setgoal.setOnClickListener(new View.OnClickListener() {
@@ -203,94 +194,178 @@ public class WaterTrackerFragment extends Fragment {
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.setCancelable(true);
                 dialog.setContentView(R.layout.watergoaldialog);
+                Slider goal_slider = dialog.findViewById(R.id.slider);
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                final EditText goaltxt = dialog.findViewById(R.id.goal_water);
+                ImageView up_arrow = dialog.findViewById(R.id.number_Picker_up_button);
+                ImageView down_arrow = dialog.findViewById(R.id.number_Picker_down_button);
+                ImageView close_dialog = dialog.findViewById(R.id.close_btn);
+                TextView numberPickerText = dialog.findViewById(R.id.current_number_picked);
+                TextView selectedGoal = dialog.findViewById(R.id.selected_text);
+                TextView selectedGlass = dialog.findViewById(R.id.selected_glass_number);
+                TextView r1 = dialog.findViewById(R.id.r1);
+                TextView r2 = dialog.findViewById(R.id.r2);
+                TextView r3 = dialog.findViewById(R.id.r3);
+                TextView r4 = dialog.findViewById(R.id.r4);
+                TextView r5 = dialog.findViewById(R.id.r5);
+                TextView r6 = dialog.findViewById(R.id.r6);
+                TextView r7 = dialog.findViewById(R.id.r7);
+                close_dialog.setOnClickListener(v -> dialog.dismiss());
+
+                selectedGoal.setText(String.valueOf(goal_slider.getValue())+" L");
+
+                goal_slider.setCustomThumbDrawable(R.drawable.thumb_for_water_draw);
+
+                goal_slider.addOnChangeListener((slider, value, fromUser) -> {
+                    DecimalFormat df = new DecimalFormat("0.0");
+                    selectedGoal.setText(df.format(slider.getValue())+ " L");
+                      int pickedNumber = Integer.parseInt(numberPickerText.getText().toString());
+                      int selected_val = (int) ((value*1000)/pickedNumber);
+                      selectedGlass.setText(String.valueOf(selected_val) +" Glass");
+                });
+
+
+
+                up_arrow.setOnClickListener(v -> {
+                    int pickedNumber = Integer.parseInt(numberPickerText.getText().toString());
+                    int incrementNumber = pickedNumber+100;
+                   // Toast.makeText(getContext(), "clicked: "+incrementNumber, Toast.LENGTH_SHORT).show();
+                    numberPickerText.setText(String.valueOf(incrementNumber));
+                    float val = Float.parseFloat((numberPickerText.getText().toString()));
+                    float rangeVal = (val/1000)*2;
+                    float interval = (rangeVal*10 - rangeVal*1)/6;
+                    DecimalFormat df = new DecimalFormat("0.0");
+
+                    r1.setText(df.format(rangeVal*1)+" L");
+                    r2.setText(df.format(rangeVal+interval*1)+" L");
+                    r3.setText(df.format(rangeVal+interval*2)+" L");
+                    r4.setText(df.format(rangeVal+interval*3)+" L");
+                    r5.setText(df.format(rangeVal+interval*4)+" L");
+                    r6.setText(df.format(rangeVal+interval*5)+" L");
+                    r7.setText(df.format(rangeVal*10)+" L");
+
+                        goal_slider.setValueFrom(rangeVal);
+                        goal_slider.setValueTo(rangeVal*10);
+                        goal_slider.setValue(rangeVal);
+                    DecimalFormat df1 = new DecimalFormat("0.0");
+                        goal_slider.setStepSize(Float.parseFloat(df1.format(val/1000)));
+                });
+
+                down_arrow.setOnClickListener(v -> {
+                    if(Integer.parseInt(numberPickerText.getText().toString())>100) {
+                        int pickedNumber = Integer.parseInt(numberPickerText.getText().toString());
+                        int DecNumber = pickedNumber - 100;
+                      //  Toast.makeText(getContext(), "clicked: " + incrementNumber, Toast.LENGTH_SHORT).show();
+                        numberPickerText.setText(String.valueOf(DecNumber));
+                        float val = Float.parseFloat((numberPickerText.getText().toString()));
+                        float rangeVal = (val/1000)*2;
+
+                        float interval = (rangeVal*10 - rangeVal*1)/6;
+
+                        DecimalFormat df = new DecimalFormat("0.0");
+
+                        r1.setText(df.format(rangeVal*1)+" L");
+                        r2.setText(df.format(rangeVal+interval*1)+" L");
+                        r3.setText(df.format(rangeVal+interval*2)+" L");
+                        r4.setText(df.format(rangeVal+interval*3)+" L");
+                        r5.setText(df.format(rangeVal+interval*4)+" L");
+                        r6.setText(df.format(rangeVal+interval*5)+" L");
+                        r7.setText(df.format(rangeVal*10)+" L");
+
+                            goal_slider.setValueFrom(rangeVal);
+                            goal_slider.setValueTo(rangeVal*10);
+                            goal_slider.setValue(rangeVal);
+                        DecimalFormat df1 = new DecimalFormat("0.0");
+                        goal_slider.setStepSize(Float.parseFloat(df1.format(val/1000)));
+                    }
+                });
+
+
+                final String[] goaltxt = {String.valueOf((goal_slider.getValue()) * 1000)};
+             //   final EditText goaltxt = dialog.findViewById(R.id.goal_water);
                 Button setGoalBtn = dialog.findViewById(R.id.set_water_goal);  // Save Button in SetGoal Fragment
                 setGoalBtn.setOnClickListener(v -> {
-                    if (!goaltxt.getText().toString().equals("")) {
-                        goal = Integer.parseInt(goaltxt.getText().toString());
+                    try {
+                        if (!goaltxt[0].toString().equals("")) {
+                            goal = Integer.parseInt(goaltxt[0].toString());
+                            // Log.d("Goal",String.valueOf(goal));
+                            waterGoal.setText(goaltxt[0].toString() + " ml");
+                            waterGoalPercent.setText(String.valueOf(calculateGoal(goal)));
+                            consumedInDay = 0;
+                            //String url = String.format("%supdatewatergoal.php",DataFromDatabase.ipConfig);
+                            //String url =  DataFromDatabase.ipConfig +"updatewatergoal.php";
+                            String url = "https://infits.in/androidApi/updatewatergoal.php";
+                            StringRequest stringRequest=new StringRequest(Request.Method.POST,
+                                    url,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
 
-                        // Log.d("Goal",String.valueOf(goal));
+                                            try {
+                                                JSONObject jsonObject = new JSONObject(response);
+                                                String message = jsonObject.getString("message");
 
-                        waterGoal.setText(goaltxt.getText().toString() + " ml");
-                        waterGoalPercent.setText(String.valueOf(calculateGoal(goal)));
-                        consumedInDay = 0;
-                        //String url = String.format("%supdatewatergoal.php",DataFromDatabase.ipConfig);
-
-                        String url =  DataFromDatabase.ipConfig +"updatewatergoal.php";
-
-
-                        StringRequest stringRequest=new StringRequest(Request.Method.POST,
-                                url,
-                                new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-
-
-                                        try {
-                                            JSONObject jsonObject = new JSONObject(response);
-                                            String message = jsonObject.getString("message");
-
-                                            int newGoal = jsonObject.getInt("goal");
+                                                int newGoal = jsonObject.getInt("goal");
 
 
-                                            // Update the UI with the new goal value if the operation was successful
-                                            if (goal!=newGoal) {
-                                                goaltxt.setText(String.valueOf(newGoal));
-                                                waterGoalPercent.setText(String.valueOf(calculateGoal(newGoal)));
-                                                getLatestWaterData();
+                                                // Update the UI with the new goal value if the operation was successful
+                                                if (goal!=newGoal) {
+                                                    goaltxt[0] = (String.valueOf(newGoal));
+                                                    waterGoalPercent.setText(String.valueOf(calculateGoal(newGoal)));
+                                                    getLatestWaterData();
+                                                }
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                                Log.d("response;;", "JSON parsing error.");
                                             }
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                            Log.d("response;;", "JSON parsing error.");
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            Log.d("response1;;","error");
                                         }
                                     }
-                                },
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Log.d("response1;;","error");
-                                    }
+                            ){
+                                @Nullable
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+                                    Map<String, String> data = new HashMap<>();
+                                    LocalDateTime now = LocalDateTime.now();// gets the current date and time
+                                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s");
+                                    data.put("clientuserID", DataFromDatabase.clientuserID);
+                                    data.put("client_id", DataFromDatabase.client_id);
+                                    data.put("dateandtime",dtf.format(now));
+                                    data.put("drinkConsumed", String.valueOf(consumedInDay));
+                                    data.put("goal",String.valueOf(goal));
+                                    data.put("type", "water");
+                                    data.put("dietitian_id",DataFromDatabase.dietitian_id);
+                                    data.put("dietitianuserID",DataFromDatabase.dietitianuserID);
+                                    data.put("amount", String.valueOf(consumedInDay));
+                                    return data;
                                 }
+                            };
+                            Volley.newRequestQueue(getActivity().getApplicationContext()).add(stringRequest);
+                            stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000,
+                                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
+                            SharedPreferences notificationPrefs = requireActivity().getSharedPreferences("notificationDetails",MODE_PRIVATE);
+                            boolean waterNotificationPermission = notificationPrefs.getBoolean("waterSwitch", false);
 
-                        ){
-                            @Nullable
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> data = new HashMap<>();
-                                LocalDateTime now = LocalDateTime.now();// gets the current date and time
-                                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s");
-                                data.put("clientuserID", DataFromDatabase.clientuserID);
-                                data.put("client_id", DataFromDatabase.client_id);
-                                data.put("dateandtime",dtf.format(now));
-                                data.put("drinkConsumed", String.valueOf(consumedInDay));
-                                data.put("goal",String.valueOf(goal));
-                                data.put("type", "water");
-                                data.put("dietitian_id",DataFromDatabase.dietitian_id);
-                                data.put("dietitianuserID",DataFromDatabase.dietitianuserID);
-                                data.put("amount", String.valueOf(consumedInDay));
-                                return data;
+                            if(false /*waterNotificationPermission*/) {
+                                setNotificationAlarm();
+                                cancelNotificationAlarmAtEndOfDay();
                             }
-                        };
-                        Volley.newRequestQueue(getActivity().getApplicationContext()).add(stringRequest);
-                        stringRequest.setRetryPolicy(new DefaultRetryPolicy(50000,
-                                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-                        SharedPreferences notificationPrefs = requireActivity().getSharedPreferences("notificationDetails",MODE_PRIVATE);
-                        boolean waterNotificationPermission = notificationPrefs.getBoolean("waterSwitch", false);
-
-                        if(false /*waterNotificationPermission*/) {
-                            setNotificationAlarm();
-                            cancelNotificationAlarmAtEndOfDay();
+                            dialog.dismiss();
+                        } else {
+                            Toast.makeText(getContext(), "Enter Goal", Toast.LENGTH_SHORT).show();
                         }
-
-                        dialog.dismiss();
-                    } else {
-                        Toast.makeText(getContext(), "Enter Goal", Toast.LENGTH_SHORT).show();
+                    }catch (Exception e){
+                        Toast.makeText(getContext(), "Api not working: error="+e.toString(), Toast.LENGTH_SHORT).show();
                     }
+
                 });
                 dialog.show();
                 waterGoalPercent.setText(String.valueOf(calculateGoal(goal)));
@@ -418,14 +493,12 @@ public class WaterTrackerFragment extends Fragment {
 //                    updateLastRecord();
 
                     //String url = String.format("%supdatewatertracker.php", DataFromDatabase.ipConfig);
-
-                    String url = DataFromDatabase.ipConfig+"updateWatertracker.php";
+                    //String url = DataFromDatabase.ipConfig+"updateWatertracker.php";
+                    String url = "https://infits.in/androidApi/updatewatergoal.php";
 
                     StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
                         try {
-                            Log.d("Water",response);
                             JSONObject jsonObject=new JSONObject(response);
-                            Log.d("Water",String.valueOf(response));
                             String amount=jsonObject.getString("total");
                             consumedInDay= Integer.parseInt(amount);
                             //String total=jsonObject.getString("total");
@@ -443,9 +516,7 @@ public class WaterTrackerFragment extends Fragment {
                                                           }
                                                       },durationOfWaterAnimation
                             );
-
                             // consumed.setText(String.valueOf(consumedInDay));
-
                             pastActivity();
                         } catch (JSONException e) {
                             Log.d("response","error");
@@ -474,7 +545,6 @@ public class WaterTrackerFragment extends Fragment {
 
                             //  Log.d("update", "consumed: " + consumedInDay);
                             // Log.d("update", "amount: " + amt);
-
                             return data;
                         }
                     };
@@ -588,7 +658,7 @@ public class WaterTrackerFragment extends Fragment {
         ArrayList<String> fetchedDateswater=new ArrayList<>();
         fetchedDateswater.clear();
         //String url = String.format("%spastActivitywater.php", DataFromDatabase.ipConfig);
-        String url = "http://192.168.1.9/infits/pastActivitywater.php";
+        String url = "https://infits.in/androidApi/pastActivitywater.php";
 
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
@@ -706,7 +776,7 @@ public class WaterTrackerFragment extends Fragment {
 
     private void getLatestWaterData() {
         //String url = String.format("%sgetLatestWaterdt.php", DataFromDatabase.ipConfig);
-        String url = "http://192.168.1.9/infits/getLatestWaterdt.php";
+        String url = "https://infits.in/androidApi/getLatestWaterdt.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -724,7 +794,12 @@ public class WaterTrackerFragment extends Fragment {
                             consumedInDay = Integer.parseInt(waterConsumedStr);
 
                             waterGoal.setText(goal + " ml");
-                            waterGoalPercent.setText((consumedInDay * 100) / goal + " %");
+                            try {
+                                waterGoalPercent.setText((consumedInDay * 100) / goal + " %");
+                            }catch (ArithmeticException e){
+                                Toast.makeText(getContext(), "Cannot be divided by zero: error"+e.toString(), Toast.LENGTH_SHORT).show();
+                            }
+
                             consumed.setText(consumedInDay + " ml");
                             lottieAnimationViewWater.setAnimation(R.raw.water_loading_animation_bottle);
                             int durationOfAnimationFromLottie = 6000;
@@ -764,7 +839,7 @@ public class WaterTrackerFragment extends Fragment {
 
     private void updateLastRecord() {
         //String url = String.format("%sgetLatestWaterdt.php", DataFromDatabase.ipConfig);
-        String url = "http://192.168.1.9/infits/getLatestWaterdt.php";
+        String url = "https://infits.in/androidApi/getLatestWaterdt.php";
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
                     Log.d("water", response);
@@ -802,7 +877,7 @@ public class WaterTrackerFragment extends Fragment {
 
     private void createNewEntry() {
         //String url = String.format("%swatertracker.php",DataFromDatabase.ipConfig);
-        String url = "http://192.168.1.9/infits/watertracker.php";
+        String url = "https://infits.in/androidApi/watertracker.php";
         StringRequest request = new StringRequest(Request.Method.POST,url, response -> {
             consumed.setText(consumedInDay +" ml");
             waterGoalPercent.setText(String.valueOf(calculateGoal(goal)));

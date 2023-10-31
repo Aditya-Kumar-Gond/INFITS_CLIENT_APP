@@ -1,28 +1,17 @@
 package com.example.infits;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
-import android.os.MemoryFile;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +21,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.L;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -42,10 +41,10 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -156,6 +155,8 @@ public class FragmentTodays_BreakFast extends Fragment {
                     linear_layout2.setVisibility(View.VISIBLE);
                     AddDatatoTable();
 
+                    createNotificationChannel();
+                    setMealAlarm();
 
                 } catch (Exception e) {
                     Log.d("Exception123", e.toString());
@@ -200,6 +201,9 @@ public class FragmentTodays_BreakFast extends Fragment {
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         CalorieTrackerFragment calorieTrackerFragment = new CalorieTrackerFragment();
                         fragmentTransaction.add(R.id.frameLayout, calorieTrackerFragment).commit();
+//                        Log.i("TAG", "AddDatatoTable: in handler ");
+//                        createNotificationChannel();
+//                        setMealAlarm();
                     }
                 }, 2000);
             },
@@ -237,7 +241,121 @@ public class FragmentTodays_BreakFast extends Fragment {
             Log.d("Exception", e.toString());
         }
     }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("CalorieChannelId", "calNotification", NotificationManager.IMPORTANCE_HIGH);
+            NotificationManager manager = getContext().getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+    private void setMealAlarm() {
+        String url2 = "https://infits.in/androidApi/calorieTracker.php";
+        Log.i("Meal alarm", "set");
+      //  Toast.makeText(getContext(), "in set alarm", Toast.LENGTH_SHORT).show();
+        StringRequest request = new StringRequest(Request.Method.POST, url2,
+                response -> {
+                    Log.d("CalTracker Data Bro", String.valueOf(response));
 
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        JSONObject dataObject = jsonObject.getJSONObject("Data");
+
+                        JSONObject goalsObject = dataObject.getJSONObject("Goals");
+                        String calorieconsumegoal = goalsObject.getString("CalorieConsumeGoal");
+                        String carbgoal = goalsObject.getString("CarbsGoal");
+                        String fibergoal = goalsObject.getString("FiberGoal");
+                        String proteingoal = goalsObject.getString("ProteinGoal");
+                        String fatgoal = goalsObject.getString("FatsGoal");
+
+
+                        JSONObject valuesObject = dataObject.getJSONObject("Values");
+                        String calories = valuesObject.getString("Calories");
+                        String carbs = valuesObject.getString("carbs");
+                        String fiber = valuesObject.getString("fiber");
+                        String protein = valuesObject.getString("protein");
+                        String fat = valuesObject.getString("fat");
+
+                        //All parsing
+                        int currentCalorie = Integer.parseInt(calories);
+                        int calorieGoal = Integer.parseInt(calorieconsumegoal);
+                        int calDiff = calorieGoal - currentCalorie;
+
+                        int carbDiff = Integer.parseInt(carbgoal) - Integer.parseInt(carbs);
+                        int fibDiff = Integer.parseInt(fibergoal) - Integer.parseInt(fiber);
+                        int proDiff = Integer.parseInt(proteingoal) - Integer.parseInt(protein);
+                        int fatDiff = Integer.parseInt(fatgoal) - Integer.parseInt(fat);
+
+                        String calText = " and " + calDiff + "kcal of calorie";
+                        String carbText = carbDiff + "g of carbs,";
+                        String fibreText = " " + fibDiff + "g of fibre";
+                        String fatText = " " + fatDiff + "g of fats,";
+                        String proteinText = " " + proDiff + "g of protein,";
+
+                        if (carbDiff <= 0) {
+                            carbText = "";
+                        }
+                        if (calDiff <= 0) {
+                            calText = "";
+                        }
+                        if (fatDiff <= 0) {
+                            fatText = "";
+                        }
+                        if (proDiff <= 0) {
+                            proteinText = "";
+                        }
+                        if (fibDiff <= 0) {
+                            fibreText = "";
+                        }
+
+                        //  Toast.makeText(getContext(), "calConsumed : "+calConsumed +" /"+calories, Toast.LENGTH_SHORT).show();
+                        String contentText = "You have " + carbText + proteinText + fatText + fibreText + calText + " left to be consumed for the day";
+
+                        Intent resultIntent = new Intent(getContext(), SplashScreen.class);
+                        resultIntent.putExtra("notification", "calorie");
+
+                        PendingIntent resultPendingIntent = PendingIntent.getActivity(
+                                getContext(), 605, resultIntent,
+                                PendingIntent.FLAG_IMMUTABLE
+                        );
+                        Notification notification = new NotificationCompat.Builder(getContext(), "CalorieChannelId")
+                                .setContentTitle("Nutrition reminder")
+                                .setContentText(contentText)
+                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                .setSmallIcon(R.mipmap.logo)
+                                .setContentIntent(resultPendingIntent)
+                                .setAutoCancel(true)
+                                .setStyle(new NotificationCompat.BigTextStyle()
+                                        .bigText(contentText))
+                                .build();
+
+                        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
+                        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        managerCompat.notify(1, notification);
+                        Log.i("Breakfast Nutrition alarm", "triggered");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }, error -> Log.e("CalTracker Data Bro", error.toString())) {
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> data = new HashMap<>();
+                LocalDateTime now = LocalDateTime.now();// gets the current date and time
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s");
+                data.put("clientID", DataFromDatabase.clientuserID);
+                data.put("today",dtf.format(now));
+                return data;
+            }
+        };
+        Volley.newRequestQueue(getContext()).add(request);
+        request.setRetryPolicy(new DefaultRetryPolicy(50000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+    }
 
     private String getMeal() {
         try {
@@ -269,18 +387,13 @@ public class FragmentTodays_BreakFast extends Fragment {
             // Set the Bitmap as the Drawable of the ImageView
 
 //        holder.addmealIcon.setImageDrawable(new BitmapDrawable(context.getResources(), decodedBitmap));
-            SharedPreferences sharedPreferences1=getActivity().getSharedPreferences("BitMapInfo", MODE_PRIVATE);
-            Log.d("lastBreakFast", sharedPreferences1.getString("ClickedPhoto",""));
-            String base64String= sharedPreferences1.getString("ClickedPhoto","");
-            byte[] imageAsBytes = Base64.decode(base64String.getBytes(), Base64.DEFAULT);
-            Bitmap   myImage= BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
 
             JSONObject jsonObject = new JSONObject(sharedPreferences.getString("TodaysBreakFast", ""));
             JSONArray jsonArray = jsonObject.getJSONArray("TodaysBreakFast");
             for (int i = 0; i < jsonArray.length(); i++) {
 
                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                todays_breakFast_infos.add(new Todays_BreakFast_info(myImage,
+                todays_breakFast_infos.add(new Todays_BreakFast_info(getContext().getDrawable(R.drawable.pizza_img),
 //                        todays_breakFast_infos.add(new Todays_BreakFast_info(decodedBitmap,
                         jsonObject1.getString("mealName"),
                         jsonObject1.getString("calorieValue"),

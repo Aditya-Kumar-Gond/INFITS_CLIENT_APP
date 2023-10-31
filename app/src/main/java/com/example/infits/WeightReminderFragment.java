@@ -204,7 +204,7 @@ public class WeightReminderFragment extends Fragment {
             editor.apply();
 
             setTextFields(pickedHour, pickedMinute);
-            // setAlarm(timeInMillis);
+           // setAlarm(timeInMillis);
         });
     }
 

@@ -390,9 +390,9 @@
                         app:cardUseCompatPadding="true"
                         android:layout_height="65dp">
                         <TextView
-                            android:id="@+id/TakeaPhotoButton"
+                            android:id="@+id/AddToMealTrackerButton"
                             android:layout_width="match_parent"
-                            android:text="Take a photo"
+                            android:text="Add"
                             android:fontFamily="@font/nats_regular"
                             android:textFontWeight="400"
                             android:textSize="24sp"
@@ -417,4 +417,4 @@
 
 
 
-    <!--    </ScrollView>-->
+<!--    </ScrollView>-->

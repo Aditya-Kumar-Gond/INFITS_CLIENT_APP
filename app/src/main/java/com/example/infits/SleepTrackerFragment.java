@@ -132,8 +132,8 @@ public class SleepTrackerFragment extends Fragment {
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> datas = new ArrayList<>();
 
-        //String url = String.format("%spastActivitySleep.php",DataFromDatabase.ipConfig);
-        String url = "https://infits.in/androidApi/pastActivitySleep.php";
+        String url = String.format("%spastActivitySleep.php",DataFromDatabase.ipConfig);
+        //String url = "https://infits.in/androidApi/pastActivitySleep.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,url, response -> {
             try {
@@ -331,8 +331,8 @@ public class SleepTrackerFragment extends Fragment {
                     }
                 }
 
-                //String url=String.format("%ssleepTracker.php",DataFromDatabase.ipConfig);
-                String url = "https://infits.in/androidApi/sleepTracker.php";
+                String url=String.format("%ssleepTracker.php",DataFromDatabase.ipConfig);
+              //  String url = "https://infits.in/androidApi/sleepTracker.php";
                 StringRequest request = new StringRequest(Request.Method.POST,url, response -> {
                     if (response.equals("updated")){
                         Toast.makeText(getActivity(), "Good Morning", Toast.LENGTH_SHORT).show();

@@ -37,8 +37,8 @@ public class SleepReminderFragment extends Fragment {
 
     SharedPreferences sharedPreferences;
     AlarmManager alarmManager;
-    //  long remindOnceTimeInMillis = 2000L;
-    long timeDiffOnce =0;
+  //  long remindOnceTimeInMillis = 2000L;
+  long timeDiffOnce =0;
 
 
     PendingIntent sleepReceiverPendingIntent;
@@ -70,7 +70,7 @@ public class SleepReminderFragment extends Fragment {
 
         set.setOnClickListener(v -> {
             if(checkBox.isChecked()){
-                // setAlarm(remindOnceTimeInMillis);
+              // setAlarm(remindOnceTimeInMillis);
                 if(timeDiffOnce ==0){
                     Toast.makeText(getActivity(), "please set alarm first", Toast.LENGTH_SHORT).show();
                 }else{
@@ -89,7 +89,7 @@ public class SleepReminderFragment extends Fragment {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("isChecked",true);
                 editor.apply();
-                //   setAlarm(remindOnceTimeInMillis);
+             //   setAlarm(remindOnceTimeInMillis);
 
             } else {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -107,7 +107,7 @@ public class SleepReminderFragment extends Fragment {
     }
 
     private void setFields() {
-        sharedPreferences = requireActivity().getSharedPreferences("SleepReminderPrefs", Context.MODE_PRIVATE);
+       sharedPreferences = requireActivity().getSharedPreferences("SleepReminderPrefs", Context.MODE_PRIVATE);
 
         time.setText(sharedPreferences.getString("get_sleepTime","8:20"));
         timeAmPm.setText(sharedPreferences.getString("get_SleepTime_am_pm","PM"));
@@ -161,13 +161,13 @@ public class SleepReminderFragment extends Fragment {
             if(OnceTimeInMillis<currentMillisOfDayOnce){
                 long currentMillisOfDayOnceExtra =currentMillisOfDayOnce + 24*60*60*1000;
                 long diff = currentMillisOfDayOnce - OnceTimeInMillis;
-                timeDiffOnce = (currentMillisOfDayOnceExtra - diff)/2;
+                 timeDiffOnce = (currentMillisOfDayOnceExtra - diff)/2;
                 Toast.makeText(getActivity(), "time : "+timeDiffOnce/1000, Toast.LENGTH_SHORT).show();
-                //setAlarm(timeDiffOnce);
+                setAlarm(timeDiffOnce);
             }else {
                 timeDiffOnce = (OnceTimeInMillis-currentMillisOfDayOnce);
                 Toast.makeText(getActivity(),String.valueOf(timeDiffOnce/1000), Toast.LENGTH_SHORT).show();
-                //  setAlarm(timeDiffOnce);
+                setAlarm(timeDiffOnce);
             }
             setTextFieldsOnce(pickedHour, pickedMinute);
 
@@ -198,15 +198,12 @@ public class SleepReminderFragment extends Fragment {
             long timeDiff;
 
             if(timeInMillis<currentMillisOfDay){
-                long currentMillisOfDayOnceExtra =currentMillisOfDay + 24*60*60*1000;
-                long diff = currentMillisOfDay - timeInMillis;
-                timeDiff = (currentMillisOfDayOnceExtra - diff)/2;
-                Toast.makeText(getActivity(), "time : "+timeDiff/1000, Toast.LENGTH_SHORT).show();
-                setAlarm(timeDiff);
+                timeDiff = 24*3600*1000-timeInMillis-currentMillisOfDay;
+            setAlarm(timeDiff);
             }else {
                 timeDiff = (timeInMillis-currentMillisOfDay);
                 Toast.makeText(getActivity(),String.valueOf(timeDiff/1000), Toast.LENGTH_SHORT).show();
-                setAlarm(timeDiff);
+                 setAlarm(timeDiff);
             }
             setTextFields(pickedHour, pickedMinute);
         });
@@ -258,7 +255,7 @@ public class SleepReminderFragment extends Fragment {
         timeAmPm.setText(amPm);
 
         sharedPreferences = requireActivity().getSharedPreferences("SleepReminderPrefs", Context.MODE_PRIVATE);
-
+        
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("get_sleepTime",timeText);
         editor.putString("get_SleepTime_am_pm",amPm);

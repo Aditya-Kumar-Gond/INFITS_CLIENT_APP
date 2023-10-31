@@ -247,8 +247,8 @@ public class StepTrackerFragment extends Fragment implements UpdateStepCard {
 //            }
 //        }
 
-        //String url = String.format("%spastActivity.php", DataFromDatabase.ipConfig);
-        String url = "https://infits.in/androidApi/pastActivity.php";
+        String url = String.format("%spastActivity.php", DataFromDatabase.ipConfig);
+        //String url = "https://infits.in/androidApi/pastActivity.php";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
             try {
@@ -355,15 +355,20 @@ public class StepTrackerFragment extends Fragment implements UpdateStepCard {
                         if (!foregroundServiceRunning()) {
                             Intent serviceIntent = new Intent(requireContext(), MyService.class);
 
-                            serviceIntent.putExtra("goal", goalVal);
-                            serviceIntent.putExtra("notificationPermission", true);
-                            requireContext().startForegroundService(serviceIntent);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                serviceIntent.putExtra("goal", goalVal);
+                                serviceIntent.putExtra("notificationPermission", stepNotificationPermission);
+                                requireContext().startForegroundService(serviceIntent);
+
+                            } else {
+                                requireContext().startService(serviceIntent);
+                            }
 
 
                         }
                     }
-                    //String url = String.format("%supdatestepgoal.php", DataFromDatabase.ipConfig);
-                    String url = "https://infits.in/androidApi/updatestepgoal.php";
+                    String url = String.format("%supdatestepgoal.php", DataFromDatabase.ipConfig);
+                    //String url = "https://infits.in/androidApi/updatestepgoal.php";
                     final StringRequest requestGoal = new StringRequest(Request.Method.POST, url, response -> {
                         try {
                             Toast.makeText(requireContext(),"Updated Goal", Toast.LENGTH_LONG).show();

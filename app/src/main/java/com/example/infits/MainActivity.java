@@ -9,8 +9,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
 
     private Handler mHandler = new Handler();
 

@@ -1,8 +1,7 @@
 package com.example.infits;
+
 import android.Manifest;
 import android.app.AlarmManager;
-import android.app.Dialog;
-import android.app.DownloadManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,34 +13,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.navigation.Navigation;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.fido.fido2.api.common.RequestOptions;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -203,37 +188,42 @@ public class DashBoardMain extends AppCompatActivity implements DashBoardFragmen
         });
 
 
-        isMealNotificationFinished = sharedPreferences.getBoolean("mealRunning",true);
-        SharedPreferences.Editor editor = (SharedPreferences.Editor) sharedPreferences.edit();
+            isMealNotificationFinished = sharedPreferences.getBoolean("mealRunning",true);
+            SharedPreferences.Editor editor = (SharedPreferences.Editor) sharedPreferences.edit();
+
+        Log.i("Meal Alarm status", "finished :"+isMealNotificationFinished );
+				//this set meal notification at different time
+            if(isMealNotificationFinished) {
+
+                isMealNotificationFinished = false;
+                editor.putBoolean("mealRunning",isMealNotificationFinished);
+                editor.apply();
+
+                long BreakfastTime = 07 * 3600 * 1000 + 30 * 60 * 1000;
+                long LunchTime = 13 * 3600 * 1000;
+                long SnackTime = 16 * 3600 * 1000 + 30 * 60 * 1000;
+                long DinnerTime = 20 * 3600 * 1000;
 
 
-        if(isMealNotificationFinished) {
+                createNotificationChannel();
 
-            isMealNotificationFinished = false;
-            editor.putBoolean("mealRunning",isMealNotificationFinished);
-            editor.apply();
+                setMealAlarm(BreakfastTime, "breakfast", 601);
+                setMealAlarm(LunchTime, "lunch", 602);
+                setMealAlarm(SnackTime,"snack",603);
+                setMealAlarm(DinnerTime,"dinner",604);
 
-            long BreakfastTime = 7 * 3600 * 1000 + 30 * 60 * 1000;
-            long LunchTime = 13 * 3600 * 1000;
-            long SnackTime = 16 * 3600 * 1000 + 30 * 60 * 1000;
-            long DinnerTime = 20 * 3600 * 1000;
 
-            long AfterBreakfastTime = 8 * 3600 * 1000;
-            long AfterLunchTime = 13 * 3600 * 1000 + 30 * 60 * 1000;
-            long AfterSnackTime = 17 * 3600 * 1000;
-            long AfterDinnerTime = 20 * 3600 * 1000 + 30 * 60 * 1000;
-            createNotificationChannel();
+                //    long AfterBreakfastTime =  120 * 1000;
+//                long AfterLunchTime = 13 * 3600 * 1000 + 30 * 60 * 1000;
+//                long AfterSnackTime = 17 * 3600 * 1000;
+//                long AfterDinnerTime = 20 * 3600 * 1000 + 30 * 60 * 1000;
 
-            setMealAlarm(BreakfastTime, "breakfast", 601);
-            setMealAlarm(LunchTime, "lunch", 602);
-            setMealAlarm(SnackTime,"snack",603);
-            setMealAlarm(DinnerTime,"dinner",604);
+                // setMealAlarm(AfterBreakfastTime, "Afterbreakfast", 605);
+//        setMealAlarm(AfterLunchTime, "Afterlunch", 606);
+//        setMealAlarm(AfterSnackTime,"Aftersnack",607);
+//        setMealAlarm(AfterDinnerTime,"Afterdinner",608);
 
-            setMealAlarm(AfterBreakfastTime, "Afterbreakfast", 605);
-            setMealAlarm(AfterLunchTime, "Afterlunch", 606);
-            setMealAlarm(AfterSnackTime,"Aftersnack",607);
-            setMealAlarm(AfterDinnerTime,"Afterdinner",608);
-        }
+            }
 
     }
     private void createNotificationChannel() {
@@ -258,10 +248,11 @@ public class DashBoardMain extends AppCompatActivity implements DashBoardFragmen
 
         Intent intent = new Intent(DashBoardMain.this,CalorieNotificationReceiver.class);
         intent.putExtra("Meal",text);
-        PendingIntent caloriePendingIntent = PendingIntent.getBroadcast(this,alarmCode,intent,PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent caloriePendingIntent = PendingIntent.getBroadcast(this,alarmCode,intent,PendingIntent.FLAG_MUTABLE);
         alarmManager.set(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+timeDiff,caloriePendingIntent);
 
-        Log.i("Alarm set at "+timeDiff/1000, "Done!");
+        Log.i("Alarm info", "Alarm will triggered after : "+timeDiff/1000+"sec");
+       // Toast.makeText(this, "Alarm will triggered after : "+alarmTime/1000+"sec", Toast.LENGTH_SHORT).show();
     }
 
     private void permissionsCheck() {

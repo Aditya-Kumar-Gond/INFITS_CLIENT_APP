@@ -1,45 +1,35 @@
 package com.example.infits;
 
-import static android.content.Context.MODE_PRIVATE;
+        import static android.content.Context.MODE_PRIVATE;
 
-import static com.google.android.material.internal.ContextUtils.getActivity;
+        import android.content.Context;
+        import android.content.SharedPreferences;
+        import android.os.Handler;
+        import android.util.Log;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.ImageView;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.util.Base64;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+        import androidx.annotation.NonNull;
+        import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+        import org.json.JSONArray;
+        import org.json.JSONObject;
 
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+        import java.util.ArrayList;
 
 public class MealtrackerFinalAdapter extends RecyclerView.Adapter<MealtrackerFinalAdapter.ViewHolder> {
 
     Context context;
     ArrayList<Todays_BreakFast_info> todays_breakFast_infos;
 
-
     public MealtrackerFinalAdapter(Context context, ArrayList<Todays_BreakFast_info> todays_breakFast_infos){
         this.todays_breakFast_infos=todays_breakFast_infos;
         this.context=context;
     }
-
-
-
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(context).inflate(R.layout.mealtracker_detail,parent,false);
 
@@ -48,8 +38,7 @@ public class MealtrackerFinalAdapter extends RecyclerView.Adapter<MealtrackerFin
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        //  holder.icon.setImageDrawable(todays_breakFast_infos.get(position).icon);
-        holder.icon.setImageBitmap(todays_breakFast_infos.get(position).icon);
+        holder.icon.setImageDrawable(todays_breakFast_infos.get(position).icon);
 //        holder.icon.setImageBitmap(todays_breakFast_infos.get(position).icon);
         holder.mealName.setText(todays_breakFast_infos.get(position).mealName);
         holder.calorieValue.setText(todays_breakFast_infos.get(position).calorieValue);
@@ -57,14 +46,6 @@ public class MealtrackerFinalAdapter extends RecyclerView.Adapter<MealtrackerFin
         holder.carbsValue.setText(todays_breakFast_infos.get(position).carbsValue + " Carbs");
         holder.quantityValue.setText(todays_breakFast_infos.get(position).quantityValue);
         holder.sizeValue.setText(todays_breakFast_infos.get(position).sizeValue);
-
-        //Mustafa Changes
-        DataFromDatabase.proteinMeal=todays_breakFast_infos.get(position).protinValue;
-        DataFromDatabase.nameMeal = todays_breakFast_infos.get(position).mealName;
-        DataFromDatabase.fatMeal = todays_breakFast_infos.get(position).fatvalue;
-        DataFromDatabase.caloriesMeal = todays_breakFast_infos.get(position).calorieValue;
-        DataFromDatabase.carbsMeal = todays_breakFast_infos.get(position).carbsValue;
-        //Mustafa Changes
         holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

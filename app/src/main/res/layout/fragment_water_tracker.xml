@@ -80,14 +80,6 @@
 <!--                app:fillBackground="false"-->
 <!--                app:gradientType="linear"-->
 <!--                app:gradientEndColor="@color/colorAccent" />-->
-            <ImageView
-                android:id="@+id/addliq"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="top"
-                android:layout_marginStart="15dp"
-                app:srcCompat="@drawable/water_add"
-                />
 
             <TextView
                 android:id="@+id/water_goal"
@@ -142,14 +134,28 @@
 
                         <RelativeLayout
                             android:layout_width="240dp"
-                            android:layout_gravity="center"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center">
+
                             <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/waterAnimation"
-                            android:layout_width="240dp"
-                            android:layout_height="270dp"
-                            android:layout_alignParentBottom="true"
-                            tools:ignore="HardcodedText" />
+                                android:id="@+id/waterAnimation"
+                                android:layout_width="240dp"
+                                android:layout_height="270dp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginBottom="-5dp"
+                                tools:ignore="HardcodedText" />
+
+                            <ImageView
+                                android:id="@+id/addliq"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_above="@+id/waterAnimation"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="top"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginEnd="35dp"
+                                android:layout_marginBottom="-37dp"
+                                app:srcCompat="@drawable/water_add" />
                         </RelativeLayout>
 
                     </androidx.cardview.widget.CardView>
