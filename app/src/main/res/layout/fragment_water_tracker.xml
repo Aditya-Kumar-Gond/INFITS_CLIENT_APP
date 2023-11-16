@@ -156,6 +156,18 @@
                                 android:layout_marginEnd="35dp"
                                 android:layout_marginBottom="-37dp"
                                 app:srcCompat="@drawable/water_add" />
+
+                            <ImageView
+                                android:id="@+id/decliq"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_above="@+id/waterAnimation"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginEnd="35dp"
+                                android:layout_marginBottom="-220dp"
+                                app:srcCompat="@drawable/water_dec" />
                         </RelativeLayout>
 
                     </androidx.cardview.widget.CardView>

@@ -160,6 +160,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:value="250"
+            android:stepSize="50"
             android:layout_marginHorizontal="30dp"
             android:valueFrom="0"
             android:valueTo="1000"
