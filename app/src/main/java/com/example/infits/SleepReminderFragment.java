@@ -277,6 +277,7 @@ public class SleepReminderFragment extends Fragment {
                 requireActivity(), 0, sleepReceiverIntent, PendingIntent.FLAG_IMMUTABLE
         );
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, sleepReceiverPendingIntent);
+
         Log.d("setAlarm", "alarm set");
     }
 

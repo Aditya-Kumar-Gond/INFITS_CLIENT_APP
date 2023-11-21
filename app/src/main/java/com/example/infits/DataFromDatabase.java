@@ -23,8 +23,8 @@ import java.util.Map;
 
 public class DataFromDatabase {
 
-           // public static String ipConfig = "http://172.24.240.1/infits/";
-       public static String ipConfig = "https://infits.in/androidApi/";
+            public static String ipConfig = "http://172.23.48.1/infits/";
+       //public static String ipConfig = "https://infits.in/androidApi/";
 
 
     public static boolean flag= false;

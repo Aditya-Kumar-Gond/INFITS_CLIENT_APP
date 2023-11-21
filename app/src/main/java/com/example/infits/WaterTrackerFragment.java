@@ -43,7 +43,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.share.Share;
 import com.google.android.material.slider.Slider;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,18 +50,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -99,7 +93,7 @@ public class WaterTrackerFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private int progr = 0;
+    private final int progr = 0;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s", Locale.getDefault());
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
     Date date = new Date();
@@ -173,8 +167,10 @@ public class WaterTrackerFragment extends Fragment {
         waterGoal = view.findViewById(R.id.water_goal);
         reminder = view.findViewById(R.id.reminder);
         rc = view.findViewById(R.id.past_activity);
+
         getLatestWaterData();
         //updateProgressBar();
+
         if (DataFromDatabase.waterGoal.equals(null) || DataFromDatabase.waterGoal.equalsIgnoreCase("null")) {
             waterGoal.setText("0 ml");
         } else {
@@ -235,7 +231,7 @@ public class WaterTrackerFragment extends Fragment {
             TextView r7 = dialog.findViewById(R.id.r7);
             close_dialog.setOnClickListener(v -> dialog.dismiss());
 
-            selectedGoal.setText(String.valueOf(goal_slider.getValue())+" L");
+            selectedGoal.setText(goal_slider.getValue() +" L");
 
             goal_slider.setCustomThumbDrawable(R.drawable.thumb_for_water_draw);
             goal_slider.addOnChangeListener((slider, value, fromUser) -> {
@@ -243,7 +239,7 @@ public class WaterTrackerFragment extends Fragment {
                 selectedGoal.setText(df.format(slider.getValue())+ " L");
                   int pickedNumber = Integer.parseInt(numberPickerText.getText().toString());
                   int selected_val = (int) ((value*1000)/pickedNumber);
-                  selectedGlass.setText(String.valueOf(selected_val) +" Glass");
+                  selectedGlass.setText(selected_val +" Glass");
             });
 
             up_arrow.setOnClickListener(v -> {
@@ -307,17 +303,18 @@ public class WaterTrackerFragment extends Fragment {
                 int goalInt = (int) (goal_slider.getValue() * 1000);
                 final String[] goaltxt = {String.valueOf(goalInt)};
 
-                goal = Integer.parseInt(goaltxt[0].toString());
+                goal = Integer.parseInt(goaltxt[0]);
                 Log.d("Goal",String.valueOf(goal));
 
-                waterGoal.setText(goaltxt[0].toString() + " ml");
+                waterGoal.setText(goaltxt[0] + " ml");
                 waterGoalPercent.setText(String.valueOf(calculateGoal(goal)));
                 consumedInDay = 0;
 
 
                 //String url = String.format("%supdatewatergoal.php",DataFromDatabase.ipConfig);
                 // String url =  DataFromDatabase.ipConfig +"watergoalupdate.php";
-                String url = "https://infits.in/androidApi/updatewatergoal.php";
+                 String url = "http://172.27.112.1/infits/updatewatergoal.php";
+               // String url = "https://infits.in/androidApi/updatewatergoal.php";
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         response -> {
 
@@ -398,6 +395,7 @@ public class WaterTrackerFragment extends Fragment {
 
         });
 
+        //for adding liquid
         addliq.setOnClickListener(v -> {
             final Dialog dialog = new Dialog(getActivity());
             dialog.setCancelable(true);
@@ -470,10 +468,10 @@ public class WaterTrackerFragment extends Fragment {
 
                     if (pastDrink == null) {
                         pastDrink = new ArrayList<>();
-                        pastDrink.add(0, String.valueOf("0 "+selectedDrink));
+                        pastDrink.add(0, "0 " + selectedDrink);
                     } else {
                         int drinknumber = pastDrink.size();
-                        pastDrink.add(String.valueOf(drinknumber+" "+selectedDrink));
+                        pastDrink.add(drinknumber + " " + selectedDrink);
 
                         // Log the values in the updated pastDrink list
                         for (String drink : pastDrink) {
@@ -582,8 +580,10 @@ public class WaterTrackerFragment extends Fragment {
 
         });
 
+        //for deducting liquid
         decliq.setOnClickListener(v -> {
             List<String> consumedList = pastDrink;
+
             if(setPastDrink.size() >0){
                int maxIndex =0;
                for(String drink : consumedList){
@@ -597,8 +597,8 @@ public class WaterTrackerFragment extends Fragment {
 
                String lastConsumed = consumedList.get(maxIndex);
                 Toast.makeText(getContext(), "last: "+lastConsumed, Toast.LENGTH_SHORT).show();
-               int lastConsumedInt = Integer.parseInt(String.valueOf(lastConsumed.substring(2)));
-               Toast.makeText(getContext(), "last int:"+lastConsumedInt, Toast.LENGTH_SHORT).show();
+               int lastConsumedInt = Integer.parseInt(lastConsumed.substring(2));
+               //Toast.makeText(getContext(), "last int:"+lastConsumedInt, Toast.LENGTH_SHORT).show();
                consumedList.remove(maxIndex);
                pastDrink = consumedList;
                setPastDrink = new LinkedHashSet<>(pastDrink);
@@ -611,6 +611,18 @@ public class WaterTrackerFragment extends Fragment {
            }else{
                Toast.makeText(getContext(), "you haven't consumed anything before!", Toast.LENGTH_SHORT).show();
            }
+            String url = "http://172.27.112.1/infits/test.php";
+            StringRequest demoRequest = new StringRequest(Request.Method.POST, url, response -> {
+                Toast.makeText(getContext(), "response "+ response, Toast.LENGTH_SHORT).show();
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getContext(), "error"+error, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            Volley.newRequestQueue(getContext()).add(demoRequest);
+            demoRequest.setRetryPolicy(new DefaultRetryPolicy(10000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES,DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 //            int prevConsumedDrink = preConsumed.getInt("prevConsumedInt",0);
 //            if(prevConsumedDrink==0){
@@ -784,8 +796,8 @@ public class WaterTrackerFragment extends Fragment {
         ArrayList<String> datas = new ArrayList<>(); // ArrayList for past Activity
         ArrayList<String> fetchedDateswater=new ArrayList<>();
         fetchedDateswater.clear();
-        //String url = String.format("%spastActivitywater.php", DataFromDatabase.ipConfig);
-        String url = "https://infits.in/androidApi/pastActivitywater.php";
+        String url = String.format("%spastActivitywater.php", DataFromDatabase.ipConfig);
+        //String url = "https://infits.in/androidApi/pastActivitywater.php";
 
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
@@ -836,6 +848,7 @@ public class WaterTrackerFragment extends Fragment {
                 rc.setAdapter(ad);
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e("pastActivity", "pastActivity: "+e );
             }
         }, error -> {
             Toast.makeText(getActivity().getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
@@ -902,8 +915,8 @@ public class WaterTrackerFragment extends Fragment {
     }
 
     private void getLatestWaterData() {
-        //String url = String.format("%sgetLatestWaterdt.php", DataFromDatabase.ipConfig);
-        String url = "https://infits.in/androidApi/getLatestWaterdt.php";
+        String url = String.format("%sgetLatestWaterdt.php", DataFromDatabase.ipConfig);
+       // String url = "https://infits.in/androidApi/getLatestWaterdt.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -924,7 +937,7 @@ public class WaterTrackerFragment extends Fragment {
                             try {
                                 waterGoalPercent.setText((consumedInDay * 100) / goal + " %");
                             }catch (ArithmeticException e){
-                                Toast.makeText(getContext(), "Cannot be divided by zero: error"+e.toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Cannot be divided by zero: error"+ e, Toast.LENGTH_SHORT).show();
                             }
 
                             consumed.setText(consumedInDay + " ml");
@@ -1003,8 +1016,8 @@ public class WaterTrackerFragment extends Fragment {
     }
 
     private void createNewEntry() {
-        //String url = String.format("%swatertracker.php",DataFromDatabase.ipConfig);
-        String url = "https://infits.in/androidApi/watertracker.php";
+        String url = String.format("%swatertracker.php",DataFromDatabase.ipConfig);
+      //  String url = "https://infits.in/androidApi/watertracker.php";
         StringRequest request = new StringRequest(Request.Method.POST,url, response -> {
             consumed.setText(consumedInDay +" ml");
             waterGoalPercent.setText(String.valueOf(calculateGoal(goal)));
