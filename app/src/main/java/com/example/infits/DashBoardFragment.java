@@ -1,4 +1,5 @@
 package com.example.infits;
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.infits.StepTrackerFragment.goalVal;
 import android.app.Dialog;
 import android.content.Context;
@@ -901,8 +902,8 @@ public class DashBoardFragment extends Fragment {
     }
 
     public void getLatestWaterData() {
-        //String url = String.format("%sgetLatestWaterdt.php", DataFromDatabase.ipConfig);
-        String url = "https://infits.in/androidApi/getLatestWaterdt.php";
+        String url = String.format("%sgetLatestWaterdt.php", DataFromDatabase.ipConfig);
+       // String url = "https://infits.in/androidApi/getLatestWaterdt.php";
         glassestv.setText("----------");
         glassesGoaltv.setText("8 Glasses");
         StringRequest request = new StringRequest(Request.Method.POST, url,
@@ -919,9 +920,11 @@ public class DashBoardFragment extends Fragment {
                         }else{
                             String waterGoalStr = array.getString("goal");
                             String waterConsumedStr = array.getString("drinkConsumed");
+                            SharedPreferences sharedPreferences =  getContext().getApplicationContext().getSharedPreferences("perGlassInMl", MODE_PRIVATE);
+                            int glassPerServe =sharedPreferences.getInt("glassPerServe",200);
 
-                            waterGoal = Integer.parseInt(waterGoalStr) / 250;
-                            waterConsumed = Integer.parseInt(waterConsumedStr) / 250;  // 250 ml = 1 glass
+                            waterGoal = Integer.parseInt(waterGoalStr) / glassPerServe;
+                            waterConsumed = Integer.parseInt(waterConsumedStr) / glassPerServe;  // 250 ml = 1 glass
 
                             glassestv.setText(waterConsumed + " Glasses");
                             glassesGoaltv.setText(waterGoal + " Glasses");

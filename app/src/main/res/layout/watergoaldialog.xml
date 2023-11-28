@@ -5,12 +5,15 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
+    android:layout_gravity="center"
     android:gravity="center"
     app:cardElevation="5dp"
     app:cardCornerRadius="10dp"
     android:layout_margin="10dp">
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
@@ -43,6 +46,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/valueIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-20dp"
@@ -125,23 +129,13 @@
         </LinearLayout>
 
 
-        <EditText
-            android:id="@+id/goal_water"
-            android:layout_width="100dp"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:inputType="number"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/nats_regular"/>
-
         <androidx.cardview.widget.CardView
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             app:cardCornerRadius="50dp"
-            android:elevation="0dp"
+            android:elevation="0.8dp"
             android:layout_margin="10dp"
-            android:outlineSpotShadowColor="#EDF4FD">
+            android:outlineSpotShadowColor="#8F9296">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -149,16 +143,20 @@
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/inLitre"
                     android:layout_width="85dp"
+                    android:layout_marginEnd="-10dp"
                     android:layout_height="match_parent"
-                    app:cardBackgroundColor="#EEF5FE"
+                    app:cardBackgroundColor="#B43838"
                     android:outlineSpotShadowColor="#EEF5FE"
                      app:cardCornerRadius="50dp">
                     <TextView
                         android:id="@+id/selected_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="0.4 L"
+                        android:layerType="hardware"
+                        android:background="#EEF5FE"
                         android:fontFamily="@font/nats_regular"
                         android:gravity="center"
                         android:textSize="18dp"
@@ -168,17 +166,27 @@
                         android:textColor="#0051AA"/>
                 </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/selected_glass_number"
-                    android:layout_width="wrap_content"
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/inGlass"
+                    android:layout_width="85dp"
                     android:layout_height="match_parent"
-                    android:text="2 Glass"
-                    android:fontFamily="@font/nats_regular"
-                    android:gravity="center"
-                    android:textSize="18dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:textColor="#0051AA"/>
+                    android:outlineSpotShadowColor="#EEF5FE"
+                    app:cardCornerRadius="50dp">
+
+                    <TextView
+                        android:id="@+id/selected_glass_number"
+                        android:layout_width="85dp"
+                        android:layout_height="match_parent"
+                        android:text="2 Glass"
+                        android:fontFamily="@font/nats_regular"
+                        android:gravity="center"
+                        android:textSize="18dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:textColor="#0051AA"/>
+                </androidx.cardview.widget.CardView>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -187,7 +195,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="13dp"
             android:stepSize="0.20"
             android:thumb="@drawable/thumb_for_water_draw"
             android:value="0.40"
@@ -235,12 +243,12 @@
                 android:id="@+id/r1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.4 L"
-                android:textSize="15dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:fontFamily="@font/nats_regular"
-                android:layout_gravity="center"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="0.4 L"
+                android:textSize="15dp" />
             <TextView
                 android:id="@+id/r2"
                 android:layout_width="wrap_content"
