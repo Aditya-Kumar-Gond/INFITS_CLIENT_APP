@@ -905,7 +905,7 @@ public class DashBoardFragment extends Fragment {
         String url = String.format("%sgetLatestWaterdt.php", DataFromDatabase.ipConfig);
        // String url = "https://infits.in/androidApi/getLatestWaterdt.php";
         glassestv.setText("----------");
-        glassesGoaltv.setText("8 Glasses");
+        glassesGoaltv.setText("-- Glasses");
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
                     Log.d("dashboardFrag", response);

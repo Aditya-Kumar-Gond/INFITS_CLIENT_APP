@@ -82,7 +82,7 @@
 <!--                app:gradientEndColor="@color/colorAccent" />-->
 
             <TextView
-                android:id="@+id/water_goal"
+                android:id="@+id/water_goal2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -98,11 +98,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_horizontal"
-                android:textSize="8dp"
-                android:textColor="#0051AB"
+                android:textSize="10dp"
+                android:textColor="#014692"
                 android:fontFamily="@font/roboto_regular"
-                android:text="0ml"
-                android:layout_marginBottom="30dp"/>
+                android:text="0 ml"
+                android:layout_marginBottom="80dp"/>
 
 
             <androidx.cardview.widget.CardView
@@ -178,34 +178,6 @@
 
 
         </androidx.cardview.widget.CardView>
-
-            <LinearLayout
-                android:layout_width="150dp"
-                android:layout_height="70dp"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center"
-                android:orientation="vertical"
-                android:background="@drawable/waterrect">
-                <TextView
-                    android:id="@+id/water_goal_percent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/nats_regular"
-                    android:text="50%"
-                    android:textColor="@color/white"
-                    android:textSize="40sp"
-                    android:layout_marginTop="-20dp"/>
-                <TextView
-                    android:id="@+id/wgoal3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/nats_regular"
-                    android:text="Goal Reached"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:layout_marginTop="-30dp"/>
-            </LinearLayout>
         <Button
             android:id="@+id/setgoal_watertracker"
             android:layout_width="120dp"
@@ -218,9 +190,89 @@
             app:cornerRadius="20sp"
             android:layout_marginTop="10dp"/>
 
+        <LinearLayout
+            android:layout_width="205dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/waterrect"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/water_goal_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-20dp"
+                    android:fontFamily="@font/nats_regular"
+                    android:text="25%"
+                    android:textColor="@color/white"
+                    android:textSize="40sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-20dp"
+                    android:fontFamily="@font/nats_regular"
+                    android:text=" %"
+                    android:textColor="@color/white"
+                    android:textSize="40sp" />
+            </LinearLayout>
 
 
+
+            <TextView
+                android:id="@+id/wgoal3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-35dp"
+                android:fontFamily="@font/nats_regular"
+                android:text="Goal Reached"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="-15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/water_consumed2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nats_regular"
+                    android:layout_marginTop="-1dp"
+                    android:text="2000ml"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nats_regular"
+                    android:text=" consumed out of "
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/water_goal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nats_regular"
+                    android:text="2800ml"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottom_sheet1"
